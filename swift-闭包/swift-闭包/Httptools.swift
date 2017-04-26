@@ -10,36 +10,34 @@ import UIKit
 
 class Httptools {
     
-    /*
-       如果你想造成强引用 也不是不可以
-     */
+    var finisedCallBack :((_ jsonData:String)->())?
     
-    var finishedCallBlock:((_ jsonData:String)->())?
+    // 发送网路请求的工具类
     
-    // 闭包类型：(参数列表)->(返回值类型)
-    // @escaping :逃逸的
-    func loadData(_ finishedCallBlock:@escaping (_ jsonDataL:String)->()){
-        //这一行代码打开的话会造成强引用 可可以试试
-//        self.finishedCallBlock = finishedCallBlock
+    // 闭包类型：(参数列表) -> (返回值类型)
+    // @escaping 逃逸的
+    func LoadData(_ finisedCallBack:@escaping (_ jsonData:String)->()){
         
+        self.finisedCallBack = finisedCallBack
         
-        // 1.发送异步网络请求
-        
+        // 发送异步网络请求
         DispatchQueue.global().async {
+
+            print("发送异步网络请求并且打印当前线程\(Thread.current)")
             
-            print("发送异步网络请求：并打印当前线程\(Thread.current)")
-            
-            // 2.回到主线程
+            // 回到主线程
             DispatchQueue.main.sync {
                 
-                print("回到主线程：并打印当前线程\(Thread.current)")
+                print("回到主线程\(Thread.current)")
                 
-                // 3.进行回调
-                finishedCallBlock("json数据")
+                finisedCallBack("jsonData")
+                
             }
             
         }
         
+        
+
     }
     
 
